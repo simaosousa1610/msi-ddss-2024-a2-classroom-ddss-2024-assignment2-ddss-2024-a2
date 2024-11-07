@@ -1,0 +1,8 @@
+/bin/
+/logs/
+/include
+/.settings/
+/.classpath
+/.factorypath
+/.project
+/target/
