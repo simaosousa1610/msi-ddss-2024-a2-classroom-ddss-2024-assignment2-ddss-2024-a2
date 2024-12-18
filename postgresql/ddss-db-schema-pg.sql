@@ -21,7 +21,8 @@ DROP TABLE IF EXISTS books;
 
 CREATE TABLE users (
     username        VARCHAR( 32)     primary key,
-    password_hash   TEXT             NOT NULL
+    password_hash   TEXT             NOT NULL,
+    user_type       VARCHAR( 16)     NOT NULL
 );
 
 
@@ -46,15 +47,15 @@ CREATE TABLE books (
 
 
 
--- Default data for messages
-insert into messages (author, message)
-          values ('Vulnerable', 'Hi! I wrote this message using Vulnerable Form.');
+-- -- Default data for messages
+-- insert into messages (author, message)
+--           values ('Vulnerable', 'Hi! I wrote this message using Vulnerable Form.');
 
-insert into messages (author, message)
-          values ('Correct', 'OMG! This form is so correct!!!');
+-- insert into messages (author, message)
+--           values ('Correct', 'OMG! This form is so correct!!!');
 
-insert into messages (author, message)
-          values ('Vulnerable', 'Oh really?');
+-- insert into messages (author, message)
+--           values ('Vulnerable', 'Oh really?');
 
 
 

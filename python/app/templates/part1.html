@@ -20,12 +20,6 @@
         <title>DDSS PA2 - Part 1.1</title>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <!--
-            V2 info:
-            - corrected a few naming bugs in the inputs
-            - fixed a few syntax issues in the HTML
-            - added some explanations
-        -->
         <style>
             .form-table {
                 background-color: #f1f1f1;
@@ -35,17 +29,15 @@
                 background-color: #f19191;
             }
         </style>
-        <script>
-            function togglePasswordVisibility(inputId, checkboxId) {
-                var passwordInput = document.getElementById(inputId);
-                var checkbox = document.getElementById(checkboxId);
-                if (checkbox.checked) {
-                    passwordInput.type = "text";
-                } else {
-                    passwordInput.type = "password";
-                }
-            }
-        </script>
+        <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self';">
+        
+        <!--
+            V2 info:
+            - corrected a few naming bugs in the inputs
+            - fixed a few syntax issues in the HTML
+            - added some explanations
+        -->
+        
     </head>
     <body>
         <div align="center">
@@ -54,7 +46,7 @@
             <h2>Practical Assignment #2 - Part 1.1</h2>
             <br>
             <br>
-            <form action="/part1_register">
+            <form action="/part1_register" method="POST">
                 <table class="form-table" border="1" cellpadding="1">
                     <thead>
                         <tr>
@@ -70,10 +62,6 @@
                             <td><label>Password</label> </td>
                             <td>
                                 <input type="password" placeholder="Enter Password" name="r_password" id="r_password" required>
-                                <div class="form-checkbox">
-                                    <input type="checkbox" id="r_show_password" onclick="togglePasswordVisibility('r_password', 'r_show_password')"> 
-                                    <label for="r_show_password">Show Password</label>
-                                </div>
                             </td>
                         </tr>
                         <tr>
@@ -81,6 +69,7 @@
                         </tr>
                     </tbody>
                 </table>
+                <input type="hidden" name="csrf_token" value = "{{ csrf_token() }}" />  
             </form>
 
             <br>
@@ -102,10 +91,6 @@
                             <td><label>Password</label> </td>
                             <td>
                                 <input type="password" placeholder="Enter Password" name="v_password" id="v_password" required>
-                                <div class="form-checkbox"></div>
-                                    <input type="checkbox" id="v_show_password" onclick="togglePasswordVisibility('v_password', 'v_show_password')"> 
-                                    <label for="v_show_password">Show Password</label>
-                                </div>
                             </td>
                         </tr>
                         <tr>
@@ -138,21 +123,18 @@
                             <td><label>Password</label> </td>
                             <td>
                                 <input type="password" placeholder="Enter Password" name="c_password" id="c_password" required>
-                                <div class="form-checkbox">
-                                    <input type="checkbox" id="c_show_password" onclick="togglePasswordVisibility('c_password', 'c_show_password')"> 
-                                    <label for="c_show_password">Show Password</label>
-                                </div>
                             </td>
                         </tr>
                         <tr>
                             <td><label>Remember me</label></td>
                             <td><input type="checkbox" checked="checked" name="c_remember"></td>
                         </tr>
-                        <tr>
                             <td class="form-actions" colspan="2"><button type="submit">Login</button></td>
+                        <tr>
                         </tr>
                     </tbody>
                 </table>
+                <input type="hidden" name="csrf_token" value = "{{ csrf_token() }}" />  
             </form> 
         </div>
     </body>

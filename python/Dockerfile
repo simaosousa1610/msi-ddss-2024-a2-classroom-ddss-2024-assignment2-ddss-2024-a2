@@ -8,9 +8,13 @@ RUN apk update && apk add postgresql-dev gcc python3-dev musl-dev
 
 run pip install flask==3.0.0
 
+run pip install flask-wtf
+
 run pip install psycopg2-binary
 
 run pip install argon2-cffi
+
+run pip install python-dotenv
 
 copy . /app
 

@@ -26,99 +26,94 @@
             - fixed a few syntax issues in the HTML
             - added some explanations
         -->
+        <style>
+            .container {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 10px; /* Reduced gap */
+                justify-items: center;
+                align-items: start;
+                margin: 0 auto; /* Center the container */
+                max-width: 1000px; /* Optional: limit the maximum width */
+            }
+            .output-box {
+                grid-column: 2 / 3;
+                grid-row: 1 / 3;
+                width: 100%;
+                height: 300px;
+            }
+        </style>
     </head>
     <body>
         <div align="center">
-
             <h1>Design and Development of Secure Software</h1>
             <h2>Practical Assignment #2 - Part 1.2 </h2>
             
             <br>
             <br>
 
+            <div class="container">
+                <form action="/part2_vulnerable">
+                    <table  style="width: 500px ; background-color:#f1f1f1" border="1" cellpadding="1" >
+                        <thead>
+                            <tr>
+                                <th>
+                                    <b>Part 2.0 - Vulnerable Form</b>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><textarea style="width: 100%; height: 100px" placeholder="Enter Text" name="v_text" required></textarea></td>
+                            </tr>
+                            <tr>
+                                <td align="right"><button type="submit">Submit</button></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </form> 
 
-            <form action="/part2_vulnerable">
-                <table  style="width: 500px ; background-color:#f1f1f1" border="1" cellpadding="1" >
+                <form action="/part2_correct" method="POST">
+                    <table  style="width: 500px ; background-color:#f19191" border="1" cellpadding="1" >
+                        <thead>
+                            <tr>
+                                <th><b>Part 2.1 - Correct Form</b></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><textarea style="width: 100%; height: 100px" placeholder="Enter Text" name="c_text" required></textarea></td>
+                            </tr>
+                            <tr>
+                                <td align="right"><button type="submit">Submit</button></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <input type="hidden" name="csrf_token" value = "{{ csrf_token() }}" />  
+                </form> 
+
+                <table class="output-box" border="1" cellpadding="1" style="width: 300px;">
                     <thead>
                         <tr>
-                            <th>
-                                <b>Part 2.0 - Vulnerable Form</b>
-
-                            </th>
+                            <th><b>Output Box</b></th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr>
-                            <td><textarea style="width: 100%; height: 100px" placeholder="Enter Text" name="v_text" required>
+                            <td>
+                                <textarea style="width: 100%; height: 100%; text-align: left;" placeholder="Output" name="output" readonly>{% for message in messages %}{{ message[1] }} - {{ message[2] }}
+                                    {% endfor %}
                                 </textarea>
+                                <script>
+                                    const textarea = document.querySelector('textarea[name="output"]');
+                                    textarea.scrollTop = textarea.scrollHeight;
+                                </script>
                             </td>
                         </tr>
-                        <tr>
-                            <td align="right"><button type="submit">Submit</button></td>
-                        </tr>
                     </tbody>
+                    <input type="hidden" name="csrf_token" value = "{{ csrf_token() }}" />  
                 </table>
-
-            </form> 
-
-            <br>
-            <br>
-
-            <form action="/part2_correct">
-                <table  style="width: 500px ; background-color:#f19191" border="1" cellpadding="1" >
-                    <thead>
-                        <tr>
-                            <th><b>Part 2.1 - Correct Form</b></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td><textarea style="width: 100%; height: 100px" placeholder="Enter Text" name="c_text" required> </textarea>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td align="right"><button type="submit">Submit</button></td>
-                        </tr>
-                    </tbody>
-                </table>
-            </form> 
-
-            <br>
-            <br>
-
-            <table  style="width: 500px" border="1" cellpadding="1" >
-                <thead>
-                    <tr>
-                        <th><b>Output Box</b></th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>
-                            <em>You should print the text here. Some examples below. 
-                                These examples should be replaced by the information you obtain from the database.</em>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            Vulnerable: Hi! I wrote this message using Vulnerable Form.
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            Correct: OMG! This form is so correct!!!
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            Vulnerable: Oh really?
-                            <script>
-                                window.alert('Is it?');
-                            </script>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
+            </div>
         </div>
     </body>
 </html>
