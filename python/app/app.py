@@ -55,14 +55,14 @@ def home():
 
 @app.route("/part1.html", methods=['GET'])
 def login():
-    if 'username' in session and 'password' in session:
+    if 'username' in session and 'user_type' in session:
         return redirect(url_for('part1_logged_in'))
 
     return render_template("part1.html")
 
 @app.route("/part1_logged_in", methods=['GET'])
 def part1_logged_in():
-    if 'username' not in session or 'password' not in session:
+    if 'username' not in session and 'user_type' not in session:
         return redirect(url_for('part1.html'))
 
     return render_template("part1_logged_in.html", username=session['username'])
@@ -75,6 +75,9 @@ def part1_logout():
 
 @app.route("/part1_register", methods=['POST'])
 def part1_register():
+    if 'username' in session and 'password' in session:
+        return redirect(url_for('part1_logged_in'))
+    
     if request.method == 'POST':
         username = request.form['r_username']
         password = request.form['r_password']
@@ -104,8 +107,9 @@ def part1_register():
 
 @app.route("/part1_vulnerable", methods=['GET', 'POST'])
 def part1_vulnerable():
-    logger.info("---- part1_vulnerable ----")
-
+    if 'username' in session and 'password' in session:
+        return redirect(url_for('part1_logged_in'))
+    
     if request.method == 'GET':
         password = request.args.get('v_password')
         username = request.args.get('v_username')
@@ -137,6 +141,7 @@ def part1_vulnerable():
         if remember == "on":
             session['username'] = username
             session['password'] = password
+            session['user_type'] = user[2]
             session.permanent = True
         
         return render_template("part1_logged_in.html", username=username)
@@ -152,6 +157,8 @@ def part1_vulnerable():
 
 @app.route("/part1_correct", methods=['POST'])
 def part1_correct():
+    if 'username' in session and 'user_type' in session:
+        return redirect(url_for('part1_logged_in'))
     try:
         if request.method == 'POST':
             password = request.form['c_password']
@@ -179,7 +186,8 @@ def part1_correct():
             return "Failed to login"
         
         if remember == "on":
-            session['username'] = username
+            session['username'] = user.username
+            session['user_type'] = user.user_type
             session.permanent = True
         
         return render_template("part1_logged_in.html", username=username)
@@ -212,13 +220,10 @@ def part2_vulnerable():
         text = request.args.get('v_text')
     else:
         text = request.form['v_text']
-
     try:
         conn = get_db()
         cur = conn.cursor()
-
         cur.execute("INSERT INTO messages (author, message) VALUES ('Vulnerable', '" + text + "')")
-
         conn.commit()
     
     except Exception as e:
@@ -554,8 +559,8 @@ def get_db():
 ## MAIN
 ##########################################################
 if __name__ == "__main__":
-    logging.basicConfig(filename="log_file.log")
-
+    # does this work?
+    logging.basicConfig(filename="logs/log_file.log")    
     logger = logging.getLogger('logger')
     logger.setLevel(logging.DEBUG)
     ch = logging.StreamHandler()
@@ -572,7 +577,7 @@ if __name__ == "__main__":
         
     logger.info("\n---------------------\n\n")
 
-    app.run(host='0.0.0.0', port=5000, debug=False)    
+    app.run(host='0.0.0.0', port=5000, debug=True)    
 
 
 

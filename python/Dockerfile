@@ -26,8 +26,6 @@ WORKDIR /app
 
 RUN mkdir -p logs
 
-RUN mkdir -p coverage
-
 EXPOSE 5000
 
 CMD ["python", "app.py"]

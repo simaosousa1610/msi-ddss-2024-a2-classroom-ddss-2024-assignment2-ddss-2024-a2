@@ -15,9 +15,10 @@
 -- 
 -- 
 
-DROP TABLE IF EXISTS users;
-DROP TABLE IF EXISTS messages;
-DROP TABLE IF EXISTS books;
+
+drop table if exists users cascade;
+drop table if exists messages cascade;
+drop table if exists books cascade;
 
 CREATE TABLE users (
     username        VARCHAR( 32)     primary key,
