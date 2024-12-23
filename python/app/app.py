@@ -14,14 +14,17 @@ from db import db
 from models import User, Book, Message
 import psycopg2
 from search_helper import SearchLogic
-
+from flask import Flask
+from flask_limiter import Limiter
+from flask_limiter.util import get_remote_address
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import or_, and_
-
 import bleach
+from flask_talisman import Talisman 
 
 load_dotenv()
 app = Flask(__name__)
+
 app.secret_key = os.getenv("SECRET_KEY")
 app.config["SESSION_COOKIE_HTTPONLY"] = True
 app.config["SESSION_COOKIE_SAMESITE"] = "Strict"
@@ -31,6 +34,38 @@ app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 csrf = CSRFProtect(app)
 db_correct = db.init_app(app)
 ph = PasswordHasher()
+talisman = Talisman(app)
+
+limiter = Limiter(
+    get_remote_address,
+    app=app,
+    default_limits=["200 per day", "50 per hour"]
+)
+
+# Content Security Policy (CSP) Header
+csp = {
+    'default-src': [
+        '\'self\'',
+        'https://code.jquery.com',
+        'https://cdn.jsdelivr.net'
+    ]
+}
+# HTTP Strict Transport Security (HSTS) Header
+hsts = {
+    'max-age': 31536000,
+    'includeSubDomains': True
+}
+# Enforce HTTPS and other headers
+talisman.force_https = True
+talisman.force_file_save = True
+talisman.x_xss_protection = True
+talisman.session_cookie_secure = True
+talisman.session_cookie_samesite = 'Lax'
+talisman.frame_options_allow_from = 'https://www.google.com'
+ 
+# Add the headers to Talisman
+talisman.content_security_policy = csp
+talisman.strict_transport_security = hsts
 
 
 def hash_password(password):
@@ -191,10 +226,8 @@ def part1_correct():
             password = request.args.get("c_password")
             remember = request.args.get("c_remember")
 
-            if not validate_username(username):
-                return "Invalid username"
-            if not validate_password(password):
-                return "Invalid password"
+            if not validate_username(username) or not validate_password(password):
+                return "Invalid request"
         else:
             return "Invalid request"
 
@@ -426,7 +459,11 @@ def part3_vulnerable():
         if sp_c:
             query = query.limit(int(sp_c))
 
+        logger.info(query)
+
         books = query.all()
+
+        logger.info(books)
 
         return render_template("part3.html", books=books)
 
@@ -572,7 +609,6 @@ def get_db():
         port="5432",
         database="ddss-database-assignment-2",
     )
-
     return db
 
 
@@ -589,4 +625,5 @@ if __name__ == "__main__":
     ch.setFormatter(formatter)
     logger.addHandler(ch)
     logger.info("\n---------------------\n\n")
-    app.run(host="0.0.0.0", port=5000, debug=True)
+
+    app.run()

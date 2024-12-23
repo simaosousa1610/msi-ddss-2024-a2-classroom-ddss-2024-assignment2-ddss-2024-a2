@@ -1,30 +1,7 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
 from db import db
-
-# CREATE TABLE users (
-#     username        VARCHAR( 32)     primary key,
-#     password_hash   TEXT             NOT NULL,
-#     user_type       VARCHAR( 16)     NOT NULL
-# );
-
-
-# CREATE TABLE messages (
-#     message_id  SERIAL PRIMARY KEY,
-#     author      VARCHAR( 16)   ,
-#     message     VARCHAR(256)    NOT NULL
-# );
-
-# CREATE TABLE books (
-#     book_id         SERIAL PRIMARY KEY,
-#     title           VARCHAR(128),
-#     authors         VARCHAR(256),
-#     category        VARCHAR(128),
-#     price           NUMERIC(8,2),
-#     book_date       DATE,
-#     description     VARCHAR(1024),
-#     keywords        VARCHAR(256),
-#     notes           VARCHAR(256),
-#     recomendation   INTEGER
-# );
 
 class User(db.Model):
     __tablename__ = 'users'

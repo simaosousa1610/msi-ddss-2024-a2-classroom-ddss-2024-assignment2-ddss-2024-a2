@@ -2,7 +2,7 @@
 # Authors: Simão Sousa, simaosousa@student.dei.uc.pt
 #
 
-FROM python:3.12-alpine3.18
+from python:3.11-alpine
 
 RUN apk update && apk add postgresql-dev gcc python3-dev musl-dev openssl
 
@@ -20,6 +20,13 @@ RUN pip install Flask-SQLAlchemy
 
 RUN pip install bleach
 
+RUN pip install Flask-Limiter
+
+RUN pip install gunicorn
+
+RUN pip install Flask-Talisman
+
+
 COPY . /app
 
 VOLUME ["/app"]
@@ -30,4 +37,4 @@ RUN mkdir -p logs
 
 EXPOSE 5000
 
-CMD ["python", "app.py"]
+CMD ["gunicorn","-b", "0.0.0.0:5000", "app:app"]

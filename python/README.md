@@ -1,13 +1,7 @@
 MSI DDSS - Python
 =====
 
-This code is to be used in the scope of the *DDSS* course.
-
-**Important:** these sources are merely suggestions of implementations. 
-You should modify everything you deem as necessary and be responsible for all the content that is delivered.
-
-*The contents of this repository do not replace the proper reading of the assignment description.*
-
+Developed by Simão Sousa, 2020226115, simaosousa@student.dei.uc.pt
 
 
 Requirements
