@@ -36,11 +36,20 @@
                 margin: 0 auto; /* Center the container */
                 max-width: 1000px; /* Optional: limit the maximum width */
             }
+            .scrollable-table {
+            width: 50%;
+            height: 200px;
+            overflow-y: auto;
+            }
             .output-box {
-                grid-column: 2 / 3;
-                grid-row: 1 / 3;
-                width: 100%;
-                height: 300px;
+                width: 50%;
+                border-collapse: collapse;
+            }
+            .output-box thead th {
+                position: sticky;
+                top: 0;
+                background-color: white;
+                z-index: 1;
             }
         </style>
     </head>
@@ -89,31 +98,33 @@
                             </tr>
                         </tbody>
                     </table>
-                    <input type="hidden" name="csrf_token" value = "{{ csrf_token() }}" />  
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
                 </form> 
+            </div>
 
-                <table class="output-box" border="1" cellpadding="1" style="width: 300px;">
-                    <thead>
-                        <tr>
-                            <th><b>Output Box</b></th>
-                        </tr>
-                    </thead>
+            <br>
+            <br>
+            <b>Output Box</b>
+            <br>
+            <br>
+
+            <div class="scrollable-table" id="scrollable-table">
+                <table class="output-box" border="1" cellpadding="1">
                     <tbody>
+                        {% for message in messages %}
                         <tr>
-                            <td>
-                                <textarea style="width: 100%; height: 100%; text-align: left;" placeholder="Output" name="output" readonly>{% for message in messages %}{{ message[1] }} - {{ message[2] }}
-                                    {% endfor %}
-                                </textarea>
-                                <script>
-                                    const textarea = document.querySelector('textarea[name="output"]');
-                                    textarea.scrollTop = textarea.scrollHeight;
-                                </script>
-                            </td>
+                            <td>{{ message.author }}: {{ message.message }}</td>
                         </tr>
+                        {% endfor %}
                     </tbody>
-                    <input type="hidden" name="csrf_token" value = "{{ csrf_token() }}" />  
                 </table>
             </div>
         </div>
+        <script>
+            window.onload = function() {
+                var scrollableTable = document.getElementById('scrollable-table');
+                scrollableTable.scrollTop = scrollableTable.scrollHeight;
+            };
+        </script>
     </body>
 </html>

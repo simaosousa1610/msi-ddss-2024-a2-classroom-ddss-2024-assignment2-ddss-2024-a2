@@ -1,28 +1,30 @@
 #
-# Authors: Nuno Antunes <nmsa@dei.uc.pt>, João Antunes <jcfa@dei.uc.pt>
+# Authors: Simão Sousa, simaosousa@student.dei.uc.pt
 #
 
-from python:3.12-alpine3.18
+FROM python:3.12-alpine3.18
 
-RUN apk update && apk add postgresql-dev gcc python3-dev musl-dev
+RUN apk update && apk add postgresql-dev gcc python3-dev musl-dev openssl
 
-run pip install flask==3.0.0
+RUN pip install flask==3.0.0
 
-run pip install flask-wtf
+RUN pip install flask-wtf
 
-run pip install psycopg2-binary
+RUN pip install psycopg2-binary
 
-run pip install argon2-cffi
+RUN pip install argon2-cffi
 
-run pip install python-dotenv
+RUN pip install python-dotenv
 
-copy . /app
+RUN pip install Flask-SQLAlchemy
 
-volume ["/app"]
+COPY . /app
 
-workdir /app
+VOLUME ["/app"]
 
-run mkdir -p logs
+WORKDIR /app
+
+RUN mkdir -p logs
 
 EXPOSE 5000
 
