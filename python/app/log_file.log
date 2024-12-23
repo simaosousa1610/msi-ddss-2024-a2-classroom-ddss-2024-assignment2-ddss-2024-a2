@@ -9373,3 +9373,14 @@ INFO:werkzeug:172.18.0.1 - - [23/Dec/2024 14:25:47] "[32mGET /part2_vulnerable?
 INFO:werkzeug:172.18.0.1 - - [23/Dec/2024 14:25:47] "GET /part2.html HTTP/1.1" 200 -
 INFO:werkzeug:172.18.0.1 - - [23/Dec/2024 14:25:55] "GET /part3.html HTTP/1.1" 200 -
 INFO:werkzeug:172.18.0.1 - - [23/Dec/2024 14:25:59] "GET /part3_correct?c_name=ColdFusion+Fast+%26+Easy+Web+Development&c_author=&c_category_id=&c_pricemin=&c_pricemax=&c_search_input=&c_search_field=any&c_radio_match=any&c_sp_d=custom&c_sp_date_range=-1&c_sp_start_month=0&c_sp_start_day=0&c_sp_start_year=&c_sp_end_month=0&c_sp_end_day=0&c_sp_end_year=&c_sp_c=10&c_sp_m=1&c_sp_s=0&csrf_token=IjIwYmE0YTA4MGNkNjZlYTRjYWVlYjc0MTg4YTlkOGYxNDQ4NjU3Zjci.Z2ly8w.kyPSGAevk0R_AvWhZ01qnT67Rfs HTTP/1.1" 200 -
+INFO:logger:
+---------------------
+
+
+INFO:werkzeug:[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://172.18.0.3:5000
+INFO:werkzeug:[33mPress CTRL+C to quit[0m
+INFO:werkzeug:172.18.0.1 - - [23/Dec/2024 15:10:58] "GET / HTTP/1.1" 200 -
+INFO:werkzeug:172.18.0.1 - - [23/Dec/2024 15:11:00] "GET /part1.html HTTP/1.1" 200 -
