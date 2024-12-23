@@ -18,6 +18,8 @@ RUN pip install python-dotenv
 
 RUN pip install Flask-SQLAlchemy
 
+RUN pip install bleach
+
 COPY . /app
 
 VOLUME ["/app"]
