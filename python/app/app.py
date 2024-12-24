@@ -25,6 +25,7 @@ app = Flask(__name__)
 app.secret_key = os.getenv("SECRET_KEY")
 app.config["SESSION_COOKIE_HTTPONLY"] = True
 app.config["SESSION_COOKIE_SAMESITE"] = "Strict"
+app.config["SESSION_COOKIE_SECURE"] = True
 app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv("DATABASE_URL")
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
@@ -67,21 +68,21 @@ def home():
 
 @app.route("/part1.html", methods=["GET"])
 def login():
-    if "username" in session and "user_type" in session:
+    if "username" in session:
         return redirect(url_for("part1_logged_in"))
 
     return render_template("part1.html")
 
 
-@app.route("/part1_logged_in", methods=["GET"])
+@app.route("/part1_logged_in", methods=["GET", "POST"])
 def part1_logged_in():
-    if "username" not in session and "user_type" not in session:
-        return redirect(url_for("part1.html"))
+    if "username" not in session:
+        return redirect(url_for("login"))
 
     return render_template("part1_logged_in.html", username=session["username"])
 
 
-@app.route("/part1_logout", methods=["GET", "POST"])
+@app.route("/part1_logout", methods = ["POST"])
 def part1_logout():
     session.pop("username", None)
     session.pop("password", None)
@@ -90,17 +91,21 @@ def part1_logout():
 
 @app.route("/part1_register", methods=["POST"])
 def part1_register():
-    if "username" in session and "password" in session:
-        return redirect(url_for("part1_logged_in"))
 
-    if request.method == "POST":
-        username = request.form["r_username"]
-        password = request.form["r_password"]
-        if not validate_username(username):
-            return "Invalid username"
-        if not validate_password(password):
-            return "Invalid password"
-    else:
+    if "username" in session and "user_type" in session:
+        return redirect(url_for("part1_logged_in"))
+    try:
+        if request.method == "POST":
+            username = request.form["r_username"]
+            password = request.form["r_password"]
+            if not validate_username(username):
+                return "Invalid username"
+            if not validate_password(password):
+                return "Invalid password"
+        else:
+            return "Invalid request"
+    except Exception as e:
+        logger.error("Invalid request: " + str(e))
         return "Invalid request"
 
     try:
@@ -126,7 +131,7 @@ def part1_register():
 
 @app.route("/part1_vulnerable", methods=["GET", "POST"])
 def part1_vulnerable():
-    if "username" in session and "password" in session:
+    if "username" in session:
         return redirect(url_for("part1_logged_in"))
 
     if request.method == "GET":
@@ -181,15 +186,15 @@ def part1_vulnerable():
             conn.close()
 
 
-@app.route("/part1_correct", methods=["GET"])
+@app.route("/part1_correct", methods=["POST"])
 def part1_correct():
     if "username" in session and "user_type" in session:
         return redirect(url_for("part1_logged_in"))
     try:
-        if request.method == "GET":
-            username = request.args.get("c_username")
-            password = request.args.get("c_password")
-            remember = request.args.get("c_remember")
+        if request.method == "POST":
+            username = request.form["c_username"]
+            password = request.form["c_password"]
+            remember = request.form["c_remember"]
 
             if not validate_username(username):
                 return "Invalid username"
@@ -212,6 +217,7 @@ def part1_correct():
             return "Failed to login"
 
         if remember == "on":
+            session.clear()
             session["username"] = user.username
             session["user_type"] = user.user_type
             session.permanent = True
@@ -272,9 +278,14 @@ def part2_correct():
     if "username" not in session or "user_type" not in session:
         return redirect(url_for("login"))
 
-    if request.method == "POST":
-        text = validate_text(request.form["c_text"])
-    else:
+    try:
+        if request.method == "POST":
+            text = validate_text(request.form["c_text"])
+        else:
+            return "Invalid request"
+        
+    except Exception as e:
+        logger.error("Invalid request: " + str(e))
         return "Invalid request"
     
     try:
@@ -299,7 +310,7 @@ def part3():
 
 @app.route("/part3_vulnerable", methods=["GET", "POST"])
 def part3_vulnerable():
-    if "username" not in session or "user_type" not in session:
+    if "username" not in session:
         return redirect(url_for("login"))
 
     if request.method == "GET":
@@ -440,9 +451,8 @@ def part3_correct():
     if "username" not in session or "user_type" not in session:
         return redirect(url_for("login"))
 
-    if request.method == "GET":
-        try:
-            # basic search
+    try:
+        if request.method == "GET":
             name = request.args.get("c_name", type=str).strip()
             author = request.args.get("c_author", type=str).strip()
             category_id = request.args.get("c_category_id", type=str).strip()
@@ -465,11 +475,12 @@ def part3_correct():
             sp_c = request.args.get("c_sp_c", type=int)
             sp_m = request.args.get("c_sp_m", type=str)
             sp_s = request.args.get("c_sp_s", type=int)
-        except Exception as e:
-            logger.error("Invalid request: " + str(e))
+        else:
             return "Invalid request"
-    else:
-        return "Invalid request"
+    
+    except Exception as e:
+                logger.error("Invalid request: " + str(e))
+                return "Invalid request"
 
     try:
         query = Book.query
@@ -589,4 +600,4 @@ if __name__ == "__main__":
     ch.setFormatter(formatter)
     logger.addHandler(ch)
     logger.info("\n---------------------\n\n")
-    app.run(host="0.0.0.0", port=5000, debug=True)
+    app.run(host="0.0.0.0", port=5000, debug=False)
